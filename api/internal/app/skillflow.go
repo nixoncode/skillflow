@@ -66,6 +66,10 @@ func (app *SkillFlowApp) Log() *zerolog.Logger {
 	return app.logger
 }
 
+func (app *SkillFlowApp) Config() *config.Config {
+	return app.config
+}
+
 func (app *SkillFlowApp) initDB() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		app.config.DB.User,

@@ -1,6 +1,8 @@
 package main
 
-import "github.com/nixoncode/skillflow/internal/app"
+import (
+	"github.com/nixoncode/skillflow/internal/app"
+)
 
 func main() {
 	sf := app.New()
