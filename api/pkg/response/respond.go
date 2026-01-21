@@ -43,3 +43,11 @@ func NotFound(c echo.Context, message string) error {
 func InternalServerError(c echo.Context, message string) error {
 	return Error(c, http.StatusInternalServerError, message)
 }
+
+func ValidationError(c echo.Context, err error) error {
+	return c.JSON(http.StatusUnprocessableEntity, ApiResponse{
+		Success: false,
+		Message: "validation failed",
+		Data:    err,
+	})
+}
