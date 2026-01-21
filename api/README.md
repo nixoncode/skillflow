@@ -56,6 +56,7 @@ CREATE TABLE users (
     role ENUM('student', 'instructor') DEFAULT 'student',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
 ```sql
 CREATE TABLE courses (

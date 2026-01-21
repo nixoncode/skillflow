@@ -57,6 +57,7 @@ func (app *SkillFlowApp) Start() error {
 	app.logger.Info().Msgf("Starting %s version %s", app.config.App.Name, app.config.App.Version)
 
 	app.rootCmd.AddCommand(cmd.NewServeCommand(app))
+	app.rootCmd.AddCommand(cmd.NewMigrateCommand(app.logger, app.db.DB, app.config.App.IsDebug))
 
 	return app.Execute()
 }
