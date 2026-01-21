@@ -1,9 +1,12 @@
 package server
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/nixoncode/skillflow/pkg/response"
+)
 
 func (s *Server) setupRoutes() {
 	s.echo.GET("/", func(c echo.Context) error {
-		return c.String(200, "Welcome to SkillFlow API")
+		return response.Ok(c, "Welcome to SkillFlow API", nil)
 	})
 }
