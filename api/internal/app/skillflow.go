@@ -7,6 +7,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/nixoncode/skillflow/config"
 	"github.com/nixoncode/skillflow/core"
+	"github.com/nixoncode/skillflow/pkg/logs"
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 )
 
@@ -16,6 +18,7 @@ type SkillFlowApp struct {
 	rootCmd *cobra.Command
 	config  *config.Config
 	db      *sqlx.DB
+	logger  *zerolog.Logger
 }
 
 func New() *SkillFlowApp {
@@ -33,6 +36,8 @@ func New() *SkillFlowApp {
 }
 
 func (app *SkillFlowApp) Bootstrap() error {
+
+	app.logger = logs.SetupLogger(app.config.App.LogLevel, app.config.App.IsDebug)
 
 	if err := app.initDB(); err != nil {
 		return err
@@ -55,6 +60,10 @@ func (app *SkillFlowApp) Shutdown() error {
 
 func (app *SkillFlowApp) DB() *sqlx.DB {
 	return app.db
+}
+
+func (app *SkillFlowApp) Log() *zerolog.Logger {
+	return app.logger
 }
 
 func (app *SkillFlowApp) initDB() error {

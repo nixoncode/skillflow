@@ -1,6 +1,9 @@
 package core
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog"
+)
 
 type App interface {
 	Bootstrap() error
@@ -9,4 +12,5 @@ type App interface {
 	Shutdown() error
 
 	DB() *sqlx.DB
+	Log() *zerolog.Logger
 }

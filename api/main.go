@@ -6,10 +6,10 @@ func main() {
 	sf := app.New()
 
 	if err := sf.Bootstrap(); err != nil {
-		panic(err)
+		sf.Log().Fatal().Err(err).Msg("Failed to bootstrap the application")
 	}
 
 	if err := sf.Start(); err != nil {
-		panic(err)
+		sf.Log().Fatal().Err(err).Msg("Failed to start the application")
 	}
 }
