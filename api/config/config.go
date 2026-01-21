@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	App *AppConfig
+	DB  *DatabaseConfig
 }
 
 func LoadConfig() *Config {
@@ -18,5 +19,6 @@ func LoadConfig() *Config {
 
 	return &Config{
 		App: loadAppConfig(),
+		DB:  loadDatabaseConfig(),
 	}
 }
