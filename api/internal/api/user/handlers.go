@@ -9,11 +9,6 @@ import (
 	"github.com/nixoncode/skillflow/pkg/response"
 )
 
-func (uh *UserHandler) Login(c echo.Context) error {
-	// Placeholder implementation
-	return response.Ok(c, "Login successful", nil)
-}
-
 func (uh *UserHandler) Register(c echo.Context) error {
 	uh.app.Log().Info().Msg("Register endpoint hit")
 	var req RegisterRequest
@@ -57,6 +52,36 @@ func (uh *UserHandler) Register(c echo.Context) error {
 	}
 
 	return response.Ok(c, "Registration successful", newUser)
+}
+
+func (uh *UserHandler) Login(c echo.Context) error {
+	var req LoginRequest
+	if err := c.Bind(&req); err != nil {
+		uh.app.Log().Error().Err(err).Msg("Failed to bind login request")
+		return response.BadRequest(c, "Invalid request payload, check documentation")
+	}
+
+	if err := req.Validate(); err != nil {
+		uh.app.Log().Warn().Err(err).Msg("Validation failed for login request")
+		return response.ValidationError(c, err)
+	}
+
+	user, err := uh.GetUserByEmail(req.Email)
+	if err != nil {
+		uh.app.Log().Error().Err(err).Msg("Failed to fetch user by email")
+		return response.InternalServerError(c, "Failed to process request")
+	}
+	if user == nil || !passwords.CheckPasswordHash(req.Password, user.PasswordHash) {
+		return response.Error(c, http.StatusUnauthorized, "Invalid email or password")
+	}
+
+	token, err := GenerateToken(user.ID, user.Role, uh.app.Config().JWT.SecretKey, uh.app.Config().JWT.ExpirationMins)
+	if err != nil {
+		uh.app.Log().Error().Err(err).Msg("Failed to generate JWT token")
+		return response.InternalServerError(c, "Failed to generate authentication token")
+	}
+
+	return response.Ok(c, "Login successful", map[string]string{"token": token})
 }
 
 func (uh *UserHandler) Logout(c echo.Context) error {

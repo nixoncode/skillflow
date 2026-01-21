@@ -10,6 +10,7 @@ type Config struct {
 	App    *AppConfig
 	DB     *DatabaseConfig
 	Server *ServerConfig
+	JWT    *JWTConfig
 }
 
 func LoadConfig() *Config {
@@ -22,5 +23,6 @@ func LoadConfig() *Config {
 		App:    loadAppConfig(),
 		DB:     loadDatabaseConfig(),
 		Server: loadServerConfig(),
+		JWT:    loadJWTConfig(),
 	}
 }

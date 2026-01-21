@@ -12,3 +12,10 @@ func (r *RegisterRequest) Validate() error {
 		v.Field(&r.Role, v.When(r.Role != "", v.In("student", "instructor").Error("role must be either a student or instructor"))),
 	)
 }
+
+func (r *LoginRequest) Validate() error {
+	return v.ValidateStruct(r,
+		v.Field(&r.Email, v.Required, is.Email),
+		v.Field(&r.Password, v.Required),
+	)
+}
