@@ -1,10 +1,16 @@
 package app
 
 import (
+	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/nixoncode/skillflow/cmd"
 	"github.com/nixoncode/skillflow/config"
 	"github.com/nixoncode/skillflow/core"
 	"github.com/nixoncode/skillflow/pkg/logs"
@@ -27,7 +33,7 @@ func New() *SkillFlowApp {
 	}
 
 	app.rootCmd = &cobra.Command{
-		Use:     app.config.App.Name,
+		Use:     strings.ToLower(app.config.App.Name),
 		Short:   "SkillFlow is a learning platform API",
 		Version: app.config.App.Version,
 	}
@@ -47,14 +53,50 @@ func (app *SkillFlowApp) Bootstrap() error {
 }
 
 func (app *SkillFlowApp) Start() error {
-	return nil
+
+	app.logger.Info().Msgf("Starting %s version %s", app.config.App.Name, app.config.App.Version)
+
+	app.rootCmd.AddCommand(cmd.NewServeCommand(app))
+
+	return app.Execute()
 }
 
 func (app *SkillFlowApp) Execute() error {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGABRT)
+	defer stop()
+
+	errChan := make(chan error, 1)
+
+	go func() {
+		if err := app.rootCmd.ExecuteContext(ctx); err != nil {
+			errChan <- fmt.Errorf("cobra command failed: %w", err)
+		}
+		errChan <- nil
+	}()
+
+	select {
+	case <-ctx.Done():
+		app.logger.Info().Msg("Shutdown down gracefully...")
+		return app.Shutdown()
+	case err := <-errChan:
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
+
 }
 
 func (app *SkillFlowApp) Shutdown() error {
+	if app.db != nil {
+		if err := app.db.Close(); err != nil {
+			app.logger.Error().Err(err).Msg("Failed to close database connection")
+			return err
+		}
+		app.logger.Info().Msg("Database connection closed")
+	}
+	app.logger.Info().Msgf("%s has been shut down", app.config.App.Name)
 	return nil
 }
 
