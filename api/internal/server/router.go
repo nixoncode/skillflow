@@ -6,6 +6,7 @@ import (
 	"github.com/nixoncode/skillflow/internal/api/enrollments"
 	"github.com/nixoncode/skillflow/internal/api/lessons"
 	"github.com/nixoncode/skillflow/internal/api/profile"
+	"github.com/nixoncode/skillflow/internal/api/progress"
 	"github.com/nixoncode/skillflow/internal/api/user"
 	"github.com/nixoncode/skillflow/pkg/response"
 )
@@ -28,5 +29,6 @@ func (s *Server) setupRoutes() {
 		courses.RegisterCourseRoutes(protectedRoutes, s.app)
 		lessons.RegisterLessonRoutes(protectedRoutes, s.app)
 		enrollments.RegisterEnrollmentRoutes(protectedRoutes, s.app)
+		progress.RegisterProgressRoutes(protectedRoutes, s.app)
 	}
 }
