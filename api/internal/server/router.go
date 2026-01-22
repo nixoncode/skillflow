@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/nixoncode/skillflow/internal/api/courses"
+	"github.com/nixoncode/skillflow/internal/api/lessons"
 	"github.com/nixoncode/skillflow/internal/api/profile"
 	"github.com/nixoncode/skillflow/internal/api/user"
 	"github.com/nixoncode/skillflow/pkg/response"
@@ -24,5 +25,6 @@ func (s *Server) setupRoutes() {
 	{
 		profile.RegisterProfileRoutes(protectedRoutes, s.app)
 		courses.RegisterCourseRoutes(protectedRoutes, s.app)
+		lessons.RegisterLessonRoutes(protectedRoutes, s.app)
 	}
 }

@@ -51,3 +51,11 @@ func ValidationError(c echo.Context, err error) error {
 		Data:    err,
 	})
 }
+
+func Unauthorized(c echo.Context, message string) error {
+	return Error(c, http.StatusUnauthorized, message)
+}
+
+func Forbidden(c echo.Context, message string) error {
+	return Error(c, http.StatusForbidden, message)
+}
