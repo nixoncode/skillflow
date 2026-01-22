@@ -23,7 +23,7 @@ func RegisterProfileRoutes(e *echo.Group, app core.App) {
 }
 
 func (ph *ProfileHandler) GetProfile(c echo.Context) error {
-	claims := user.GetUserClaims(c)
+	claims := user.GetClaims(c)
 	if claims == nil {
 		return response.Error(c, http.StatusUnauthorized, "Invalid token claims")
 	}

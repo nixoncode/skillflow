@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/nixoncode/skillflow/internal/api/courses"
 	"github.com/nixoncode/skillflow/internal/api/profile"
 	"github.com/nixoncode/skillflow/internal/api/user"
 	"github.com/nixoncode/skillflow/pkg/response"
@@ -22,5 +23,6 @@ func (s *Server) setupRoutes() {
 	protectedRoutes.Use(useAuth(s.app.Config().JWT.SecretKey))
 	{
 		profile.RegisterProfileRoutes(protectedRoutes, s.app)
+		courses.RegisterCourseRoutes(protectedRoutes, s.app)
 	}
 }

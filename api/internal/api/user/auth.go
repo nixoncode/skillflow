@@ -38,7 +38,7 @@ func ParseToken(tokenString string, secretKey string) (*JwtCustomClaims, error) 
 	}
 }
 
-func GetUserClaims(c echo.Context) *JwtCustomClaims {
+func GetClaims(c echo.Context) *JwtCustomClaims {
 	token, ok := c.Get("user").(*jwt.Token)
 	if !ok {
 		return nil
